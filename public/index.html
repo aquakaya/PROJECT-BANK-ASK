@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask-AI Local - IA Intégrée</title>
+    <style>
+        /* Reset et Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        /* Conteneur Principal */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        /* En-tête */
+        header {
+            background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        header p {
+            opacity: 0.9;
+        }
+        
+        /* Zone de Chat */
+        .chat-container {
+            height: 60vh;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        /* Messages */
+        .message {
+            max-width: 80%;
+            padding: 0.8rem 1.2rem;
+            border-radius: 18px;
+            line-height: 1.5;
+            position: relative;
+        }
+        
+        .user-message {
+            background-color: #e3f2fd;
+            margin-left: auto;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .ai-message {
+            background-color: #f1f1f1;
+            margin-right: auto;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+        
+        /* Blocs de Code */
+        .code-block {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+            position: relative;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        /* Zone de Saisie */
+        .input-area {
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            background-color: #f8f9fa;
+            display: flex;
+            gap: 0.8rem;
+        }
+        
+        #mode-select {
+            padding: 0.6rem;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: white;
+        }
+        
+        #user-input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: none;
+            min-height: 60px;
+        }
+        
+        #send-btn {
+            background: linear-gradient(135deg, #6e48aa 0%, #9d50bb 100%);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+        
+        #send-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Pied de Page */
+        footer {
+            text-align: center;
+            padding: 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            .chat-container {
+                height: 65vh;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .input-area {
+                flex-direction: column;
+            }
+            
+            #mode-select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ask-AI Local</h1>
+            <p>IA intégrée - Aucune API externe nécessaire</p>
+        </header>
+        
+        <div class="chat-container" id="chat-container">
+            <div class="ai-message message">
+                Bonjour ! Je suis votre IA locale. Je peux :
+                <ul>
+                    <li>Répondre à vos questions</li>
+                    <li>Générer du code (HTML, CSS, JS, Python)</li>
+                    <li>Expliquer des concepts</li>
+                </ul>
+                Posez-moi n'importe quoi !
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <select id="mode-select">
+                <option value="text">Réponse Texte</option>
+                <option value="html">Générer HTML</option>
+                <option value="css">Générer CSS</option>
+                <option value="js">Générer JavaScript</option>
+                <option value="python">Générer Python</option>
+            </select>
+            <textarea id="user-input" placeholder="Posez votre question ou demandez du code..."></textarea>
+            <button id="send-btn">Envoyer</button>
+        </div>
+        
+        <footer>
+            Ask-AI Local - Toutes les données restent sur votre appareil
+        </footer>
+    </div>
+
+    <script>
+        // Moteur d'IA simplifié (simulation)
+        class LocalAI {
+            constructor() {
+                this.knowledgeBase = {
+                    greetings: ["Bonjour !", "Salut ! Comment puis-je vous aider ?", "Hello !"],
+                    codeExamples: {
+                        html: "<!DOCTYPE html>\n<html>\n<head>\n    <title>Exemple</title>\n</head>\n<body>\n    <!-- Votre contenu ici -->\n</body>\n</html>",
+                        css: "body {\n    font-family: Arial;\n    margin: 0;\n    padding: 20px;\n    background: #f4f4f4;\n}",
+                        js: "function hello() {\n    console.log('Bonjour le monde !');\n}\n\nhello();",
+                        python: "def hello():\n    print(\"Bonjour le monde !\")\n\nhello()"
+                    },
+                    responses: [
+                        "Je suis une IA fonctionnant localement dans votre navigateur.",
+                        "Cette réponse est générée sans connexion à un serveur externe.",
+                        "Vous pouvez personnaliser mes réponses en modifiant le code JavaScript."
+                    ]
+                };
+            }
+            
+            generateResponse(input, mode) {
+                // Simulation de délai de traitement
+                const delay = Math.random() * 1000 + 500;
+                
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        let response;
+                        
+                        if (mode === 'text') {
+                            if (input.toLowerCase().includes('bonjour') || input.toLowerCase().includes('salut')) {
+                                response = this.knowledgeBase.greetings[
+                                    Math.floor(Math.random() * this.knowledgeBase.greetings.length)
+                                ];
+                            } else {
+                                response = `Vous avez demandé : "${input}". ` + 
+                                    this.knowledgeBase.responses[
+                                        Math.floor(Math.random() * this.knowledgeBase.responses.length)
+                                    ];
+                            }
+                        } else {
+                            response = `Exemple de code ${mode} :\n` + 
+                                this.knowledgeBase.codeExamples[mode];
+                        }
+                        
+                        resolve(response);
+                    }, delay);
+                });
+            }
+        }
+
+        // Initialisation
+        const aiEngine = new LocalAI();
+        const chatContainer = document.getElementById('chat-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const modeSelect = document.getElementById('mode-select');
+
+        // Ajouter un message au chat
+        function addMessage(content, isUser, type = 'text') {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'ai-message');
+            
+            if (type === 'code') {
+                const codeBlock = document.createElement('pre');
+                codeBlock.classList.add('code-block');
+                
+                const copyBtn = document.createElement('button');
+                copyBtn.classList.add('copy-btn');
+                copyBtn.textContent = 'Copier';
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(content);
+                    copyBtn.textContent = 'Copié !';
+                    setTimeout(() => copyBtn.textContent = 'Copier', 2000);
+                };
+                
+                codeBlock.textContent = content;
+                codeBlock.appendChild(copyBtn);
+                messageDiv.appendChild(codeBlock);
+            } else {
+                messageDiv.textContent = content;
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Gérer l'envoi de message
+        async function handleSend() {
+            const question = userInput.value.trim();
+            if (!question) return;
+            
+            const mode = modeSelect.value;
+            
+            // Ajouter le message de l'utilisateur
+            addMessage(question, true);
+            userInput.value = '';
+            
+            // Afficher un indicateur de chargement
+            const loadingMsg = addMessage("L'IA réfléchit...", false);
+            
+            // Obtenir la réponse
+            const response = await aiEngine.generateResponse(question, mode);
+            
+            // Remplacer le message de chargement
+            chatContainer.removeChild(loadingMsg);
+            
+            if (mode === 'text') {
+                addMessage(response, false);
+            } else {
+                addMessage(`Voici du code ${mode} :`, false);
+                addMessage(response, false, 'code');
+            }
+        }
+
+        // Écouteurs d'événements
+        sendBtn.addEventListener('click', handleSend);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+    </script>
+</body>
+</html>
