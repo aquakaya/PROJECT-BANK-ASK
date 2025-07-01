@@ -1,0 +1,9 @@
+{
+    "examples": [
+        {
+            "description": "Fonction Python qui additionne deux nombres",
+            "code": "def add(a, b):\n    return a + b",
+            "language": "python"
+        }
+    ]
+}
