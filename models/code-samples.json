@@ -1,0 +1,10 @@
+{
+    "templates": {
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Nouveau Projet</title>\n</head>\n<body>\n    <!-- Votre contenu ici -->\n</body>\n</html>",
+        "python": "def main():\n    # Votre code ici\n\nif __name__ == '__main__':\n    main()"
+    },
+    "examples": {
+        "html": ["<button onclick=\"alert('Bonjour!')\">Cliquez ici</button>"],
+        "python": ["print('Bonjour le monde')"]
+    }
+}
