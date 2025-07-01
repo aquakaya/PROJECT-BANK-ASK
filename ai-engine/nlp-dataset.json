@@ -1,0 +1,9 @@
+{
+    "intents": [
+        {
+            "tag": "salutation",
+            "examples": ["Bonjour", "Salut"],
+            "responses": ["Bonjour !", "Salut à vous !"]
+        }
+    ]
+}
