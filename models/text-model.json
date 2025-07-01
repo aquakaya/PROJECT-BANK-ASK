@@ -1,0 +1,6 @@
+{
+    "bonjour": ["Salut !", "Bonjour ! Comment puis-je vous aider ?"],
+    "aide": ["Je peux vous aider avec du code et des explications. Que souhaitez-vous ?"],
+    "html": ["HTML est un langage de balisage pour créer des pages web."],
+    "python": ["Python est un langage de programmation puissant et facile à apprendre."]
+}
